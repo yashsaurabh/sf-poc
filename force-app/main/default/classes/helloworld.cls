@@ -1,5 +1,5 @@
 public class helloworld{
-     public static void sayHello() {
-      system.debug('Hello Team');
+     public static Integer Addition (Integer a, Integer b) {
+     return a+b;
       }
     }
