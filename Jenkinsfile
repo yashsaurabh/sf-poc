@@ -1,7 +1,9 @@
 import groovy.json.JsonSlurperClassic
 node {
 
+
     def BUILD_NUMBER=env.BUILD_NUMBER	
+
     def jenkins_url="http://3.15.6.200:8080/blue/organizations/jenkins/Actual_SFDX_Job/detail/main/"
     def final_url=jenkins_url+BUILD_NUMBER+"/pipeline"
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
