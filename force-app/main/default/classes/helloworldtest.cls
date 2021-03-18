@@ -5,6 +5,6 @@ public class helloworldtest {
       Test.startTest();
      integer sum= helloworld.Addition(2,3);
       Test.stopTest();
-      System.assertEquals(sum,6);
+      System.assertEquals(sum,5);
    }
 }
