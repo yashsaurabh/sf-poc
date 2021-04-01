@@ -150,7 +150,7 @@ stage('Run Tests In Package UAT Org') {
 }
 	
 }
-	/*			
+				
 		
 			
 					// Run unit tests in package install scratch org.
@@ -175,7 +175,7 @@ stage('Run Tests In Package Dev Org') {
 	
 }
 	
-	*/
+
 				// need to pull out assigned username
 				if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
