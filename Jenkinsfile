@@ -4,7 +4,7 @@ node {
 
     def BUILD_NUMBER=env.BUILD_NUMBER	
 
-    def jenkins_url="http://18.222.119.244:8080/blue/organizations/jenkins/SF-poc-devops/detail/main/"
+    def jenkins_url="http://3.137.211.35:8080/blue/organizations/jenkins/SF-poc-devops/detail/main/"
     def final_url=jenkins_url+BUILD_NUMBER+"/pipeline"
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
