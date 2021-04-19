@@ -181,12 +181,8 @@ stage('Run Tests In Package Dev Org') {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}else{
 			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
-					timeout(time: 3, unit: "MINUTES") {
-					while (status == '1') 
-						{
-						   exit;
-						}
-				}
+					sleep time: 60, unit: 'SECONDS'
+				
 				}
 			   
 			  
