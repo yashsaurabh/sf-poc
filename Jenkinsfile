@@ -42,7 +42,7 @@ node {
  	
        		if (env.BRANCH_NAME == "UAT")  {
 
-		      withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_dev', variable: 'CONNECTED_APP_uat'), string(credentialsId: 'HUB_ORG_DH_uat', variable: 'HUB_ORG_DH_uat'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
+		      withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_uat', variable: 'CONNECTED_APP_uat'), string(credentialsId: 'HUB_ORG_DH_uat', variable: 'HUB_ORG_DH_uat'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
         		stage('Dev:Authorization and Deployment') {
             	if (isUnix()) {
                 	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_uat} --username ${HUB_ORG_uat} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
