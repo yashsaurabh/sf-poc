@@ -22,9 +22,9 @@ node {
 
     println 'KEY IS' 
     println JWT_KEY_CRED_ID
-    println HUB_ORG_prod
+    println HUB_ORG_DH_prod
     println SFDC_HOST
-    println CONNECTED_APP_CONSUMER_KEY_prod
+    println CONNECTED_APP_prod
     def toolbelt = tool 'toolbelt'
     def BRANCH_NAME = env.BRANCH_NAME
     
