@@ -13,8 +13,8 @@ node {
     def HUB_ORG_uat=env.HUB_ORG_DH_uat
 	def HUB_ORG_dev=env.HUB_ORG_DH_dev
 	// def HUB_ORG_prod=env.HUB_ORG_DH_prod
-//    def SFDC_HOST = env.SFDC_HOST_DH
-//    def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+   def SFDC_HOST = env.SFDC_HOST_DH
+    def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
     def CONNECTED_APP_CONSUMER_KEY_uat=env.CONNECTED_APP_CONSUMER_KEY_DH_uat
 	def CONNECTED_APP_CONSUMER_KEY_dev=env.CONNECTED_APP_dev
 	// def CONNECTED_APP_CONSUMER_KEY_prod=env.CONNECTED_APP_prod
