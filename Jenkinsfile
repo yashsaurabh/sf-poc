@@ -10,12 +10,12 @@ node {
     def SFDC_USERNAME
     def TEST_LEVEL
 
-    def HUB_ORG_uat=env.HUB_ORG_DH_uat
+   // def HUB_ORG_uat=env.HUB_ORG_DH_uat
 	def HUB_ORG_dev=env.HUB_ORG_DH_dev
 	def HUB_ORG_prod=env.HUB_ORG_DH_prod
     def SFDC_HOST = env.SFDC_HOST_DH
     def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
-    def CONNECTED_APP_CONSUMER_KEY_uat=env.CONNECTED_APP_CONSUMER_KEY_DH_uat
+ //   def CONNECTED_APP_CONSUMER_KEY_uat=env.CONNECTED_APP_CONSUMER_KEY_DH_uat
 	def CONNECTED_APP_CONSUMER_KEY_dev=env.CONNECTED_APP_dev
 	def CONNECTED_APP_CONSUMER_KEY_prod=env.CONNECTED_APP_prod
 	
@@ -42,7 +42,7 @@ node {
  	
        		if (env.BRANCH_NAME == "UAT")  {
 
-		    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+		      withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_dev', variable: 'CONNECTED_APP_uat'), string(credentialsId: 'HUB_ORG_DH_uat', variable: 'HUB_ORG_DH_uat'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
         		stage('Dev:Authorization and Deployment') {
             	if (isUnix()) {
                 	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_uat} --username ${HUB_ORG_uat} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
