@@ -183,7 +183,7 @@ stage('Run Tests In Package Dev Org') {
 			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 					timeout(120) {
 					waitUntil {
-                                                       "status" = 1
+                                                       "status" == 1
                                                   }
 					}
 				}
