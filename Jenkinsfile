@@ -204,12 +204,12 @@ stage('Run Tests In Package Dev Org') {
  
        				if (env.BRANCH_NAME == "main")  {
 
-    					withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+    					 withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_prod', variable: 'CONNECTED_APP_prod')),string(credentialsId: 'HUB_ORG_DH_prod', variable: 'HUB_ORG_DH_prod'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
         					stage('Prod:Authorization and Deployment') {
            						 if (isUnix()) {
-               							 rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_prod} --username ${HUB_ORG_prod} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+               							 rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_prod} --username ${HUB_ORG_DH_prod} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
            							 }else{
-                 						 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_prod} --username ${HUB_ORG_prod} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                 						 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_prod} --username ${HUB_ORG_DH_prod} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             							}
           			  if (rc != 0) { error 'hub org authorization failed' }
 
@@ -241,12 +241,12 @@ stage('Run Tests In Package Dev Org') {
 stage('Run Tests In Package Prod Org') {
   if (isUnix()) {
 	
-	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
 	    println rc
   }
 	else
 	{
-	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
            println rc
 	  
 	    if (rc != 0) {
@@ -260,7 +260,7 @@ stage('Run Tests In Package Prod Org') {
 					// need to pull out assigned username
 					if (isUnix()) {
 						 input "Deploy to prod?"
-						rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+						rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
 						//rmsg="Prod deployment pretend"
 					}else{
 				
@@ -268,7 +268,7 @@ stage('Run Tests In Package Prod Org') {
 						timeout(time: 10, unit: "MINUTES") {
 						mail bcc: '', body: 'Please go to the link to approve or Reject the deployment-'+final_url,  cc: 'saurabh.aglave@yash.com', from: '', replyTo: '', subject: 'Prod deployment approval request', to: 'gs14701@gmail.com'
 						input "Deploy to prod?"
-		     				 rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+		     				 rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
 				
 			 			 // rmsg="Prod deployment pretend"
 					}
