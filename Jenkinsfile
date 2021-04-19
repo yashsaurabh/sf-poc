@@ -181,7 +181,9 @@ stage('Run Tests In Package Dev Org') {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}else{
 			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+				timeout(time: 3, unit: "MINUTES")
 				}
+			   
 			  
             	printf rmsg
             	println('Hello from a Job DSL script!')
