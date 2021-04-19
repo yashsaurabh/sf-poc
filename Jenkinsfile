@@ -187,13 +187,14 @@ stage('Run Tests In Package Dev Org') {
             	printf rmsg
 			  
             	println('Hello from a Job DSL script!')
-            	println(rmsg)
-			   
-			    timeout(120) {
+		 timeout(3) {
 					waitUntil {
                                                        "status" == 1
                                                   }
-					}
+					}	   
+            	println(rmsg)
+			   
+			   
 		mail bcc: '', body: 'Dev stage is successful-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Successful job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
 			}
 		    }
