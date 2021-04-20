@@ -181,9 +181,9 @@ stage('Run Tests In Package Dev Org') {
 				if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}else{
-			   	//rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
+			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
 					
-					def jsonSlurper = new JsonSlurper()
+					/*def jsonSlurper = new JsonSlurper()
 					   while(1) {
 						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 						   def obj = jsonSlurper.parseText(rmsg)
@@ -195,7 +195,7 @@ stage('Run Tests In Package Dev Org') {
 						   else{
 							printf obj
 							sleep(5000)
-						   }  
+						   }  */
 				}
 			  
             	printf rmsg
