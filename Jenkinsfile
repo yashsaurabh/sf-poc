@@ -189,10 +189,10 @@ stage('Run Tests In Package Dev Org') {
 					   while(1) {
 						   //rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report --json"
-						   
+						   printf rmsg
 						   def obj = jsonSlurper.parseText(rmsg)
 						   printf obj
-						   if((obj.status).equals("1")) {
+						   if( obj.status == 1) {
 							printf obj
 							break
 						   }     
