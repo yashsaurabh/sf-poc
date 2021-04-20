@@ -180,17 +180,28 @@ stage('Run Tests In Package Dev Org') {
 				if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}else{
-			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
-					}
+			   	
+				   while(1) {
+				   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+				   if(rmsg.status == 1) {
+				          
+					   printf rmsg
+					   exit;
+				                        }     
+					   else{
+					        printf rmsg
+					        sleep(5000)
+						
+					        }
+				              }
 			   
 			  
             	printf rmsg
 			  
             	println('Hello from a Job DSL script!')
 	  
-            	println(rmsg)
-		println(status)	   
-                  
+            	println(rmsg)  
+
 			   
 		mail bcc: '', body: 'Dev stage is successful-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Successful job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
 			}
