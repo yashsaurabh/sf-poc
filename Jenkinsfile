@@ -186,15 +186,15 @@ stage('Run Tests In Package Dev Org') {
 				   if(rmsg.status == 1) {
 				          
 					   printf rmsg
-					   exit;
+					        break
 				                        }     
 					   else{
 					        printf rmsg
 					        sleep(5000)
 						
 					        }
-				              }
-			   
+				              
+				            }
 			  
             	printf rmsg
 			  
