@@ -192,6 +192,7 @@ stage('Run Tests In Package Dev Org') {
 						   printf rmsg
 						   def obj = jsonSlurper.parseText(rmsg)
 						   printf obj
+						   printf("Status Code - "+ obj.status)
 						   if( obj.status == 1) {
 							printf obj
 							break
