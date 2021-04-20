@@ -190,7 +190,8 @@ stage('Run Tests In Package Dev Org') {
 						   //rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report --json"
 						   printf rmsg
-						   def obj = jsonSlurper.parseText(rmsg)
+						   //def obj = jsonSlurper.parseText(rmsg)
+						  def obj =  groovy.json.JsonSlurperClassic().parseText(rmsg)
 						   printf obj
 						   printf("Status Code - "+ obj.status)
 						   if( obj.status == 1) {
