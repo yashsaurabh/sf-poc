@@ -178,15 +178,18 @@ stage('Run Tests In Package Dev Org') {
 	
 
 				// need to pull out assigned username
-				if (isUnix()) {
+			if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}
 			   else{
 			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev} --json"
 					
 					def jsonSlurper = new JsonSlurper()
+				   	
 					   while(1) {
-						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+						   //rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report --json"
+						   
 						   def obj = jsonSlurper.parseText(rmsg)
 						   printf obj
 						   if((obj.status).equals("1")) {
