@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurperClassic
+import groovy.json.JsonSlurper
 node {
 
 
@@ -187,8 +188,8 @@ stage('Run Tests In Package Dev Org') {
 						   //rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_dev} --json"
 						   print rmsg
-						   //def obj = jsonSlurper.parseText(rmsg)
-						   obj = new groovy.json.JsonSlurperClassic().parseText(rmsg)
+						   obj = jsonSlurper.parseText(rmsg)
+						   obj = new groovy.json.JsonSlurper().parseText(rmsg)
 						   print obj
 						   print "Status Code - " + (obj.status)
 						   if( obj.status == 1) {
