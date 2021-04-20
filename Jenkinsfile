@@ -187,15 +187,7 @@ stage('Run Tests In Package Dev Org') {
             	printf rmsg
 			  
             	println('Hello from a Job DSL script!')
-		  
-			    if("status" == 0) 
-			   {
-			      waitUntil {
-                                        "status" == 1      // some block
-                                         }
-			   }
-			   
-			   
+	  
             	println(rmsg)
 		println(status)	   
                   
