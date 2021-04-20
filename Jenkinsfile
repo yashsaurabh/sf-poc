@@ -183,7 +183,7 @@ stage('Run Tests In Package Dev Org') {
 			   	
 				   while(1) {
 				   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
-				   if(rmsg.status == 1) {
+				   if(rmsg."status" == 1) {
 				          
 					   printf rmsg
 					        break
