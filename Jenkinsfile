@@ -183,7 +183,7 @@ stage('Run Tests In Package Dev Org') {
 			   else{
 			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev} --json"
 					
-					def jsonSlurper = new JsonSlurper()
+
 				   	
 					   while(1) {
 						   //rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
