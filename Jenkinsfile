@@ -156,7 +156,24 @@ stage('Run Tests In Package UAT Org') {
 			
 					// Run unit tests in package install scratch org.
 
- 
+ stage('Run Tests In Package Dev Org') {
+  if (isUnix()) {
+	
+	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+	    println rc
+  }
+	else
+	{
+	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+           println rc
+	  
+	    if (rc != 0) {
+        error 'Salesforce unit test run in dev org failed.'
+    }
+	  
+}
+	
+}
 
 	
 
@@ -164,11 +181,11 @@ stage('Run Tests In Package UAT Org') {
 				if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}else{
-			  	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-					printf rmsg 
+			  //	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+				//	printf rmsg 
 					def jsonSlurper = new JsonSlurper()
 					   while(1) {
-						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 						   rmsg = jsonSlurper.parseText(rmsg)
 						   if(rmsg.status == 1) {
 							printf rmsg
