@@ -190,12 +190,12 @@ stage('Run Tests In Package UAT Org') {
                     //def jsonSlurper = new JsonSlurper()
                     flag = 5;
                     while(flag > 0) {
-                        rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
+                        r = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
                         //rmsg = jsonSlurper.parseText(rmsg)
                         //jsonObj = readJSON text: rmsg
-                        jsonObj =  jsonParse(rmsg)
+                        jsonObj =  jsonParse(r)
                         //print jsonObj
-                        print jsonObj.result
+                        print jsonObj[result]
                         flag -= 1
                         sleep(3)
                            
