@@ -1,12 +1,5 @@
 import groovy.json.JsonSlurperClassic
-import groovy.json.JsonSlurper
-import groovy.json.*
 
-
-@NonCPS
-def jsonParse(def json) {
-    new groovy.json.JsonSlurperClassic().parseText(json)
-}
 node {
 
 
@@ -190,11 +183,10 @@ stage('Run Tests In Package UAT Org') {
                     //def jsonSlurper = new JsonSlurper()
                     flag = 5;
                     while(flag > 0) {
-                        r = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
-                        //rmsg = jsonSlurper.parseText(rmsg)
-                        //jsonObj = readJSON text: rmsg
-                        jsonObj =  jsonParse(r)
-                        //print jsonObj
+                        rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
+                        jsonObj = readJSON text: rmsg
+                        
+                        print jsonObj
                         print jsonObj[result]
                         flag -= 1
                         sleep(3)
