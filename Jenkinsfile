@@ -188,9 +188,9 @@ stage('Run Tests In Package UAT Org') {
                     flag = 5;
                     while(flag > 0) {
                         def r = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
-                        
-                        //def jsonObj = readJSON text: r
-                        def jsonObj = jsonSlurper.parseText(r)
+                        print r
+                        def jsonObj = readJSON text: r
+                        //def jsonObj = jsonSlurper.parseText(r)
                         print jsonObj
                         print jsonObj[result]
                         flag -= 1
