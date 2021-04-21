@@ -3,7 +3,6 @@ import groovy.json.JsonSlurper
 import groovy.json.*
 node {
 
-    @NonCPS
     def jsonSlurper = new JsonSlurper()
     def BUILD_NUMBER=env.BUILD_NUMBER    
 
