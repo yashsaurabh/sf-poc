@@ -192,10 +192,10 @@ stage('Run Tests In Package UAT Org') {
                         print rmsg
                         flag -= 1
                         sleep(3)
-                        print rmsg.result.status
+                        
                            
-                        //    if(rmsg.result.status == 'Succeeded') {
-                        //         print rmsg
+                         //  if(rmsg.result.status == 'Succeeded') {
+                        //       print rmsg
                         //         break
                         //     }     
                         //    else{
