@@ -191,7 +191,7 @@ stage('Run Tests In Package UAT Org') {
                            //rmsg = jsonSlurper.parseText(rmsg)
                             printf rmsg
                         flag -= 1
-                        sleep(3000)
+                        sleep(3)
                            
                         //    if(rmsg.status == 1) {
                         //         printf rmsg
