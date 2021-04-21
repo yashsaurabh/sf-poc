@@ -124,12 +124,12 @@ stage('Run Tests In Package UAT Org') {
      
                if (env.BRANCH_NAME == "Dev")  {
 
-           withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_dev', variable: 'CONNECTED_APP_dev'), string(credentialsId: 'HUB_ORG_DH_dev', variable: 'HUB_ORG_DH_dev'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
+           withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'Org_Consumer_Key_Dev', variable: 'Org_Consumer_Key_Dev'), string(credentialsId: 'HUB_ORG_DH_dev', variable: 'HUB_ORG_DH_dev'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
                 stage('Dev:Authorization and Deployment') {
                 if (isUnix()) {
-                    rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_dev} --username ${HUB_ORG_DH_dev} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                    rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${Org_Consumer_Key_Dev} --username ${HUB_ORG_DH_dev} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
                 }else{
-                     rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_dev} --username ${HUB_ORG_DH_dev} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                     rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${Org_Consumer_Key_Dev} --username ${HUB_ORG_DH_dev} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
                 }
                 if (rc != 0) { error 'hub org authorization failed' }
 
