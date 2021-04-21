@@ -181,23 +181,23 @@ stage('Run Tests In Package Dev Org') {
 				if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
 				}else{
-			  //	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-				//	printf rmsg
-				     
+			  	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+					
 					def jsonSlurper = new JsonSlurper()
 					   while(1) {
-						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
 						   rmsg = jsonSlurper.parseText(rmsg)
 						   if(rmsg.status == 1) {
 							printf rmsg
 							break
-						   }     
+						                        }     
 						   else{
 							printf rmsg
 							sleep(5000)
-						   }  
-				}
-			  
+						       }  
+				
+					            }
+				        }
             	printf rmsg
             	println('Hello from a Job DSL script!')
             	println(rmsg)
@@ -206,7 +206,6 @@ stage('Run Tests In Package Dev Org') {
 		    }
 		}
 	     }
-   
 	catch (err) {
         		echo "Caught: ${err}"
         		currentBuild.result = 'FAILURE'
