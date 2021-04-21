@@ -178,30 +178,23 @@ stage('Run Tests In Package Dev Org') {
 	
 
 				// need to pull out assigned username
-			if (isUnix()) {
+				if (isUnix()) {
 					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-				}
-			   else{
-			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev} --json"
-				
+				}else{
+			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
+					printf rmsg
+					def jsonSlurper = new JsonSlurper()
 					   while(1) {
-						   //rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
-						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_dev} --json"
-						   print rmsg						   
-						   def jsonSlurper = new JsonSlurper()
-						   def obj = jsonSlurper.parseText(rmsg)
-						   obj = new groovy.json.JsonSlurper().parseText(rmsg)
-						   print obj
-						   print "Status Code - " + (obj.status)
-						   if( obj.status == 1) {
-							print obj
+						   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev} --json"
+						   rmsg = jsonSlurper.parseText(rmsg)
+						   if(rmsg.status == 1) {
+							printf rmsg
 							break
 						   }     
 						   else{
-							print obj
+							printf rmsg
 							sleep(5000)
-						   } 
-					   }
+						   }  
 				}
 			  
             	printf rmsg
