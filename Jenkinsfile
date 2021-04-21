@@ -1,6 +1,12 @@
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonSlurper
 import groovy.json.*
+
+
+@NonCPS
+def jsonParse(def json) {
+    new groovy.json.JsonSlurperClassic().parseText(json)
+}
 node {
 
 
@@ -175,9 +181,6 @@ stage('Run Tests In Package UAT Org') {
 }
     
 }
-
-    
-
                 // need to pull out assigned username
                 if (isUnix()) {
                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
@@ -189,8 +192,9 @@ stage('Run Tests In Package UAT Org') {
                     while(flag > 0) {
                         rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
                         //rmsg = jsonSlurper.parseText(rmsg)
-                        jsonObj = readJSON text: rmsg
-                        print jsonObj
+                        //jsonObj = readJSON text: rmsg
+                        jsonObj =  jsonParse(rmsg)
+                        //print jsonObj
                         print jsonObj.result
                         flag -= 1
                         sleep(3)
