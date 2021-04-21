@@ -3,7 +3,8 @@ import groovy.json.JsonSlurper
 import groovy.json.*
 node {
 
-
+    @NonCPS
+    def jsonSlurper = new JsonSlurper()
     def BUILD_NUMBER=env.BUILD_NUMBER    
 
     def jenkins_url="http://3.137.211.35:8080/blue/organizations/jenkins/SF-poc-devops/detail/main/"
@@ -184,8 +185,7 @@ stage('Run Tests In Package UAT Org') {
                 }else{
                   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                     
-                    @NonCPS
-                    def jsonSlurper = new JsonSlurper()
+                  
                     
                     flag = 5;
                     while(1) {
