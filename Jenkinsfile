@@ -7,7 +7,7 @@ import groovy.json.*
 
 node {
 
-
+    def child_process=require('child_process');
     def BUILD_NUMBER=env.BUILD_NUMBER    
 
     def jenkins_url="http://3.137.211.35:8080/blue/organizations/jenkins/SF-poc-devops/detail/main/"
