@@ -187,7 +187,7 @@ stage('Run Tests In Package UAT Org') {
                     //def jsonSlurper = new JsonSlurper()
                     flag = 5;
                     while(flag > 0) {
-                       DEPLOY_SUCCESS=bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -i ${HUB_ORG_DH_dev} --json | jq.result.success) [ $DEPLOY_SUCCESS != 'true' ] && echo "Deployment Failed" && exit 1
+                       DEPLOY_SUCCESS=bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -i ${HUB_ORG_DH_dev} --json | (jq.result.success) [ $DEPLOY_SUCCESS != 'true' ] && echo "Deployment Failed" && exit 1
                         
                            
                         //    if(rmsg.status == 1) {
