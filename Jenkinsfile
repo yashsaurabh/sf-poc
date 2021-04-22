@@ -4,7 +4,7 @@ import groovy.json.*
 
 node {
 
-
+    
     def BUILD_NUMBER=env.BUILD_NUMBER    
 
     def jenkins_url="http://3.137.211.35:8080/blue/organizations/jenkins/SF-poc-devops/detail/main/"
@@ -102,23 +102,9 @@ stage('Run Tests In Package Dev Org') {
                 if (isUnix()) {
                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                 }else{
-                   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-                    
-                                    rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
-                                    
-                                    rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
-                                    def object = readJSON text: rmsg                                   
-                                    if (object.result.done) 
-                                    {
-                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end'
-                                    }
-                                     else
-                                    {
-                                        sleep(3000)   //sleep
-                                    }
+               
                 }
-              
-                println('Hello from a Job DSL script!')
+                println('Hello from a Job DSL script!!')
                 
         mail bcc: '', body: 'Dev stage is successful-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Successful job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
             }
