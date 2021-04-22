@@ -116,7 +116,7 @@ stage('Run Tests In Package Dev Org') {
                     
                     
                     
-                    def status=result.result.status    //+2
+                    def status = rmsg.rmsg.status    //+2
                        print status
                     
                     while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {                 //+1
