@@ -105,24 +105,20 @@ stage('Run Tests In Package Dev Org') {
                 if (isUnix()) {
                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                 }else{
-                   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-                    //def jsonSlurper = new JsonSlurper()
+                             rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+                    
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
-                                   print rmsg
-                                //    println 'class type - '+rmsg
-                                //     def json = JsonOutput.prettyPrint(rmsg)
                                     
-                                //     def object = readJSON text: json
-                                //     //def object = jsonSlurper.parseText(json)
-                                //     print object.status  
-                                //     if (object.status=='succeeded')    //status succesded
-                                //     {
-                                //         print 'hey'; ///prnt rmsg
-                                //     }
-                                //     else
-                                //     {
-                                //         sleep(3000)   //sleep
-                                //     }
+                                    rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
+                                    def object = readJSON text: rmsg                                   
+                                    if (object.result.done) 
+                                    {
+                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end' 
+                                    }
+                                     else
+                                    {
+                                        sleep(3000)   //sleep
+                                    }   
                 }
               
                 printf rmsg
