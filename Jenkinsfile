@@ -109,20 +109,23 @@ stage('Run Tests In Package Dev Org') {
                     //def jsonSlurper = new JsonSlurper()
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
                                    print rmsg
+                            def jsonSlurper = new JsonSlurper()  
+                            def jsonresp=bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev}  --json"
+                              def object = jsonSlurper.parseText(jsonresp)   
                                 //    println 'class type - '+rmsg
                                 //     def json = JsonOutput.prettyPrint(rmsg)
                                     
                                 //     def object = readJSON text: json
                                 //     //def object = jsonSlurper.parseText(json)
                                 //     print object.status  
-                                //     if (object.status=='succeeded')    //status succesded
-                                //     {
-                                //         print 'hey'; ///prnt rmsg
-                                //     }
-                                //     else
-                                //     {
-                                //         sleep(3000)   //sleep
-                                //     }
+                                    if (object.status=='succeeded')    //status succesded
+                                     {
+                                         print jsonresp; ///prnt rmsg
+                                    }
+                                     else
+                                    {
+                                        sleep(3000)   //sleep
+                                     }
                 }
               
                 printf rmsg
