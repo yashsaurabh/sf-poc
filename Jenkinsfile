@@ -108,20 +108,21 @@ stage('Run Tests In Package Dev Org') {
                    rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                     //def jsonSlurper = new JsonSlurper()
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
-                                    println 'class type - '+rmsg
-                                    def json = JsonOutput.prettyPrint(rmsg)
-                                    print json
-                                    def object = readJSON text: json
-                                    //def object = jsonSlurper.parseText(json)
-                                    print object.status  
-                                    if (object.status=='succeeded')    //status succesded
-                                    {
-                                        print 'hey'; ///prnt rmsg
-                                    }
-                                    else
-                                    {
-                                        sleep(3000)   //sleep
-                                    }
+                                   print json
+                                //    println 'class type - '+rmsg
+                                //     def json = JsonOutput.prettyPrint(rmsg)
+                                    
+                                //     def object = readJSON text: json
+                                //     //def object = jsonSlurper.parseText(json)
+                                //     print object.status  
+                                //     if (object.status=='succeeded')    //status succesded
+                                //     {
+                                //         print 'hey'; ///prnt rmsg
+                                //     }
+                                //     else
+                                //     {
+                                //         sleep(3000)   //sleep
+                                //     }
                 }
               
                 printf rmsg
