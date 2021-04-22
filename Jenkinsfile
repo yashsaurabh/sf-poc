@@ -7,7 +7,7 @@ import groovy.json.*
 
 node {
 
-    def child_process=require('child_process');
+    
     def BUILD_NUMBER=env.BUILD_NUMBER    
 
     def jenkins_url="http://3.137.211.35:8080/blue/organizations/jenkins/SF-poc-devops/detail/main/"
@@ -111,34 +111,16 @@ stage('Run Tests In Package Dev Org') {
                                     
                           
                 
- 
-def resultJSON=child_process.execFileSync('sfdx', rmsg);
-def result=JSON.parse(resultJSON);
- 
-def status=result.result.status;
-while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {
-        def msg='Deployment ' + status;
-        if ('Queued'!=status) {
-                msg+=' (' + result.result.numberComponentsDeployed + '/' +
-                            result.result.numberComponentsTotal + ')'
-        }
-        console.log(msg);
-        var reportParams=['force:mdapi:deploy:report', '-i', result.result.id,
-                          '-u', HUB_ORG_DH_dev, '--json'];
-        resultJSON=child_process.execFileSync('sfdx', rmsg);
-        result=JSON.parse(resultJSON);
-        status=result.result.status;
-}
- 
-console.log('Deployment ' + result.result.status);
+
+
                     
                     
                     
+                    def status=result.result.status    //+2
                     
+                    while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {                 //+1
                     
-                    
-                    
-                    /*   rmsg = rmsg.substring(rmsg.indexOf('{'))
+                      rmsg = rmsg.substring(rmsg.indexOf('{'))
                                    print 'S!cr!t_start'+rmsg+'S!cr!t_end'
                              
                                 //    println 'class type - '+rmsg
@@ -154,7 +136,7 @@ console.log('Deployment ' + result.result.status);
                                      else
                                     {
                                         sleep(3000)   //sleep
-                                     } */
+                                     } 
                 }
               
                 printf rmsg
