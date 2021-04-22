@@ -107,13 +107,15 @@ stage('Run Tests In Package Dev Org') {
                                             
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
                                     print(rmsg)
-                                    def jsonString = json.dump(rmsg)
-                                    def jsonObj = readJSON text: jsonString
-
-                       
-                                    if (jsonObj['status'] == 'Succeeded')
+                                 
+                                //    def jsonObj = readJSON text: jsonString
+                                        def jsonSlurper = new JsonSlurper()  
+                                        def jsonresp= rmsg
+                                         def object = jsonSlurper.parseText(jsonresp)   
+              
+                                    if (object.status== 'Succeeded')
                     {
-                                     print(jsonobj)
+                                     print(jsonresp)
                     }
                     
                                    // rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
