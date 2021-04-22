@@ -105,17 +105,17 @@ stage('Run Tests In Package Dev Org') {
                      rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                     
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
-                                    
-                                    rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
-                                    def object = readJSON text: rmsg                                   
-                                    if (object.result.done) 
-                                    {
-                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end' 
-                                    }
-                                     else
-                                    {
-                                        sleep(3000)   //sleep
-                                    }   
+                                    print(rmsg)
+                                   // rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
+                                   // def object = readJSON text: rmsg                                   
+                                   // if (object.result.done) 
+                                  //  {
+                                   //      print 'S!cr!t_start'+rmsg+'S!cr!t_end' 
+                                   // }
+                                   //  else
+                                   // {
+                                   //     sleep(3000)   //sleep
+                                   // }   
                
                 }
                 println('Hello from a Job DSL script!!')
