@@ -112,7 +112,14 @@ stage('Run Tests In Package Dev Org') {
                     def status = rmsg.rmsg.status    //+2
                        print status
                     
-                    while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {                 //+1
+                    while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {    //+1
+                        
+                        def msg='Deployment ' + status;
+                           if ('Queued'!=status) {
+                              msg+=' (' + result.result.numberComponentsDeployed + '/' +
+                            result.result.numberComponentsTotal + ')'
+                             }
+                          console.log(msg);
                     
                    /*   rmsg = rmsg.substring(rmsg.indexOf('{'))
                                    print 'S!cr!t_start'+rmsg+'S!cr!t_end'
@@ -131,6 +138,7 @@ stage('Run Tests In Package Dev Org') {
                                     {
                                         sleep(3000)   //sleep
                                      } */
+                }
                 }
               
                 printf rmsg
