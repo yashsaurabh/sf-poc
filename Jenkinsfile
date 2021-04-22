@@ -187,14 +187,7 @@ stage('Run Tests In Package UAT Org') {
                     //def jsonSlurper = new JsonSlurper()
                     flag = 5;
                     while(flag > 0) {
-                        def r = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report -u ${HUB_ORG_DH_dev} --json"
-                        print r['status']
-                        def jsonObj = readJSON text: r
-                        //def jsonObj = jsonSlurper.parseText(r)
-                        print jsonObj
-                        print jsonObj[result]
-                        flag -= 1
-                        sleep(3)
+                       DEPLOY_SUCCESS=$(sfdx force:mdapi:deploy:report -i $DEPOYMENT_ID --json | jq .result.success) [ $DEPLOY_SUCCESS != 'true' ] && echo "Deployment Failed" && exit 1
                         
                            
                         //    if(rmsg.status == 1) {
