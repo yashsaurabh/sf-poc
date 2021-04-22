@@ -197,8 +197,7 @@ else
 {
  
 println(object.ID);   
-}
-}                   
+}              
                     
                     
                     /*flag = 5;
@@ -222,8 +221,8 @@ println(object.ID);
                         //         printf rmsg
                         //         sleep(3000)
                         //     }  
-                        }
-                    }
+                        
+                    
                 printf rmsg
                 println('Hello from a Job DSL script!')
                 println(rmsg)
