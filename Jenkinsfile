@@ -1,8 +1,5 @@
 import groovy.json.JsonSlurperClassic
-import net.sf.json.JSONSerializer
-import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
-import java.io.File
+//import net.sf.json.JSONSerializer
 import groovy.json.*
 
 node {
@@ -106,31 +103,23 @@ stage('Run Tests In Package Dev Org') {
                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                 }else{
                    rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-                    //def jsonSlurper = new JsonSlurper()
+                    
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
                                     
-                                    rmsg = rmsg.substring(rmsg.indexOf('{'))
-                                   print 'S!cr!t_start'+rmsg+'S!cr!t_end'
-                             
-                                //    println 'class type - '+rmsg
-                                //     def json = JsonOutput.prettyPrint(rmsg)
-                                    
-                                    def object = readJSON text: rmsg
-                                //     //def object = jsonSlurper.parseText(json)
-                                   
-                                    if (object.result.status=='Succeeded')    //status succesded
-                                     {
-                                         print  'result status - '+object.result.status ; ///prnt rmsg
+                                    rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
+                                    def object = readJSON text: rmsg                                   
+                                    if (object.result.done) 
+                                    {
+                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end'
                                     }
                                      else
                                     {
                                         sleep(3000)   //sleep
-                                     }
+                                    }
                 }
               
-                printf rmsg
                 println('Hello from a Job DSL script!')
-                println(rmsg)
+                
         mail bcc: '', body: 'Dev stage is successful-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Successful job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
             }
             }
