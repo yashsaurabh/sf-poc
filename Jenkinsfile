@@ -110,8 +110,8 @@ stage('Run Tests In Package Dev Org') {
                                  
                                 //    def jsonObj = readJSON text: jsonString
                                         def jsonSlurper = new JsonSlurper()  
-                                        def jsonresp= rmsg
-                                         def object = jsonSlurper.parseText(jsonresp)   
+                                        
+                                         def object = jsonSlurper.parseText(rmsg)   
               
                                     if (object.status== 'Succeeded')
                     {
