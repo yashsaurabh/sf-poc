@@ -116,8 +116,6 @@ else
 {
 sleep(3000)   //sleep
 }
-         }       
-         }
 				}
 			  
             	printf rmsg
