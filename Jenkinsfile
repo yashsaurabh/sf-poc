@@ -1,6 +1,7 @@
 import groovy.json.JsonSlurperClassic
 //import net.sf.json.JSONSerializer
 import groovy.json.*
+import jenkins.model.*
 
 node {
 
