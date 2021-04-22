@@ -103,9 +103,18 @@ stage('Run Tests In Package Dev Org') {
                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                 }else{
                      rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-                    
+                                            
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
                                     print(rmsg)
+                                    def jsonString = json.dump(rmsg)
+                                    def jsonObj = readJSON text: jsonString
+
+                       
+                                    if (jsonObj['status'] == 'Succeeded')
+                    {
+                                     print(jsonobj)
+                    }
+                    
                                    // rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
                                    // def object = readJSON text: rmsg                                   
                                    // if (object.result.done) 
