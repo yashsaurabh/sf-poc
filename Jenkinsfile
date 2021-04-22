@@ -183,21 +183,9 @@ stage('Run Tests In Package UAT Org') {
                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                 }else{
                   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
-                    
+                }
                     //def jsonSlurper = new JsonSlurper()
                   
-                    def jsonSlurper = new JsonSlurper()  
-                     def jsonresp= '{ "name": "John", "ID" : "1"}'
-                      def object = jsonSlurper.parseText(jsonresp)   
-if (object.name=='John')
-{
-print 'hey';
-}
-else
-{
- 
-println(object.ID);   
-}              
                     
                     
                     /*flag = 5;
@@ -221,7 +209,7 @@ println(object.ID);
                         //         printf rmsg
                         //         sleep(3000)
                         //     }  
-                        
+           
                     
                 printf rmsg
                 println('Hello from a Job DSL script!')
