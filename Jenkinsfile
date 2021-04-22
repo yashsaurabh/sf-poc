@@ -108,8 +108,8 @@ stage('Run Tests In Package Dev Org') {
                    rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
                     //def jsonSlurper = new JsonSlurper()
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
-                                    def json1 = JsonOutput.toJson(rmsg)
-                                    def json = JsonOutput.prettyPrint(json1)
+                                    print 'class type - '+rmsg.getClass()
+                                    def json = JsonOutput.prettyPrint(json)
                                     print json
                                     def object = readJSON text: json
                                     //def object = jsonSlurper.parseText(json)
