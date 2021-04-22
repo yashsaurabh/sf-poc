@@ -109,7 +109,36 @@ stage('Run Tests In Package Dev Org') {
                     //def jsonSlurper = new JsonSlurper()
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
                                     
-                                    rmsg = rmsg.substring(rmsg.indexOf('{'))
+                          
+                
+ 
+def resultJSON=child_process.execFileSync('sfdx', rmsg);
+def result=JSON.parse(resultJSON);
+ 
+def status=result.result.status;
+while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {
+        def msg='Deployment ' + status;
+        if ('Queued'!=status) {
+                msg+=' (' + result.result.numberComponentsDeployed + '/' +
+                            result.result.numberComponentsTotal + ')'
+        }
+        console.log(msg);
+        var reportParams=['force:mdapi:deploy:report', '-i', result.result.id,
+                          '-u', HUB_ORG_DH_dev, '--json'];
+        resultJSON=child_process.execFileSync('sfdx', rmsg);
+        result=JSON.parse(resultJSON);
+        status=result.result.status;
+}
+ 
+console.log('Deployment ' + result.result.status);
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    /*   rmsg = rmsg.substring(rmsg.indexOf('{'))
                                    print 'S!cr!t_start'+rmsg+'S!cr!t_end'
                              
                                 //    println 'class type - '+rmsg
@@ -125,7 +154,7 @@ stage('Run Tests In Package Dev Org') {
                                      else
                                     {
                                         sleep(3000)   //sleep
-                                     }
+                                     } */
                 }
               
                 printf rmsg
