@@ -109,19 +109,10 @@ stage('Run Tests In Package Dev Org') {
                     //def jsonSlurper = new JsonSlurper()
                                     rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
                  
-                    def status = rmsg.rmsg.status    //+2
-                       print status
-                    
-                    while (-1==(['Succeeded', 'Canceled', 'Failed'].indexOf(status))) {    //+1
                         
-                        def msg='Deployment ' + status;
-                           if ('Queued'!=status) {
-                              msg+=' (' + result.result.numberComponentsDeployed + '/' +
-                            result.result.numberComponentsTotal + ')'
-                             }
-                          console.log(msg);
+                       
                     
-                   /*   rmsg = rmsg.substring(rmsg.indexOf('{'))
+                     rmsg = rmsg.substring(rmsg.indexOf('{'))
                                    print 'S!cr!t_start'+rmsg+'S!cr!t_end'
                              
                                 //    println 'class type - '+rmsg
