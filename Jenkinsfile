@@ -9,8 +9,8 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
     def TEST_LEVEL
-	def uat_cred=env.Salesforce_Project_1}/Org_Username_Dev
-		       def uat_user=env.Salesforce_Project_1}/Org_Consumer_Key_Dev
+	def uat_cred=env.Salesforce_Project_1/Org_Username_Dev
+		       def uat_user=env.Salesforce_Project_1/Org_Consumer_Key_Dev
    // ef HUB_ORG_uat=env.HUB_ORG_DH_uat
 	def HUB_ORG_dev=env.HUB_ORG_DH_dev
 	def HUB_ORG_prod=env.HUB_ORG_DH_prod
