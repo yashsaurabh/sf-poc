@@ -33,7 +33,7 @@ node {
     println CONNECTED_APP_CONSUMER_KEY_prod
     def toolbelt = tool 'toolbelt'
     def BRANCH_NAME = env.BRANCH_NAME
-	def uat_mail = param.${"Salesforce_Project_1.Org_Username_Dev"}
+	
    
 	    stage('checkout source') {
         		// when running in multi-branch job, one must issue this command
