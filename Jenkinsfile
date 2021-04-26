@@ -9,9 +9,8 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
     def TEST_LEVEL
-	def uat_cred=env.Salesforce_Project_1/Org_Username_Dev
-		       def uat_user=env.Salesforce_Project_1/Org_Consumer_Key_Dev
-   // ef HUB_ORG_uat=env.HUB_ORG_DH_uat
+
+   // def HUB_ORG_uat=env.HUB_ORG_DH_uat
 	def HUB_ORG_dev=env.HUB_ORG_DH_dev
 	def HUB_ORG_prod=env.HUB_ORG_DH_prod
     def SFDC_HOST = env.SFDC_HOST_DH
@@ -43,12 +42,12 @@ node {
  	
        		if (env.BRANCH_NAME == "UAT")  {
 
-		      withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'uat_user', variable: 'uat_user'), string(credentialsId: 'uat_cred', variable: 'uat_cred'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
+		      withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'HUB_ORG_DH_uat', variable: 'HUB_ORG_DH_uat'), string(credentialsId: 'CONNECTED_APP_uat', variable: 'CONNECTED_APP_uat'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
         		stage('Dev:Authorization and Deployment') {
             	if (isUnix()) {
-                	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${uat_cred} --username ${uat_user} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_uat} --username ${HUB_ORG_DH_uat} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             	}else{
-                	 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${uat_cred} --username ${uat_user} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                	 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_uat} --username ${HUB_ORG_DH_uat} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             	}
             	if (rc != 0) { error 'hub org authorization failed' }
 
@@ -80,12 +79,12 @@ node {
 stage('Run Tests In Package UAT Org') {
   if (isUnix()) {
 	
-	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${uat_user}"
+	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
 	    println rc
   }
 	else
 	{
-	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${uat_user}"
+	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
            println rc
 	  
 	    if (rc != 0) {
@@ -98,9 +97,9 @@ stage('Run Tests In Package UAT Org') {
 				
 				// need to pull out assigned username
 				if (isUnix()) {
-					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${uat_user}"
+					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
 				}else{
-			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${uat_user}"
+			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
 				}
 			  
             	printf rmsg
