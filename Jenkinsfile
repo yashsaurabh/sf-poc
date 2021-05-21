@@ -326,6 +326,5 @@ stage('Run Tests In Package Prod Org') {
  catch (err) {
         		echo "Caught: ${err}"
         		currentBuild.result = 'FAILURE'
-			mail bcc: '', body: 'Prod deployment stage is Failed',  cc: 'raghav.soni@yash.com', from: '', replyTo: '', subject: 'Failed job', to: 'patel.himanshu@yash.com'
-	}
+			}
 }
