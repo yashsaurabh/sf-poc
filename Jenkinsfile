@@ -1,4 +1,10 @@
 import groovy.json.JsonSlurperClassic
+import groovy.json.JsonSlurperClassic
+import net.sf.json.JSONSerializer
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import java.io.File
+import groovy.json.*
 node {
 
 
@@ -10,12 +16,12 @@ node {
     def SFDC_USERNAME
     def TEST_LEVEL
 
-    def HUB_ORG_uat=env.HUB_ORG_DH_uat
+   // def HUB_ORG_uat=env.HUB_ORG_DH_uat
 	def HUB_ORG_dev=env.HUB_ORG_DH_dev
 	def HUB_ORG_prod=env.HUB_ORG_DH_prod
     def SFDC_HOST = env.SFDC_HOST_DH
     def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
-    def CONNECTED_APP_CONSUMER_KEY_uat=env.CONNECTED_APP_CONSUMER_KEY_DH_uat
+ //   def CONNECTED_APP_CONSUMER_KEY_uat=env.CONNECTED_APP_CONSUMER_KEY_DH_uat
 	def CONNECTED_APP_CONSUMER_KEY_dev=env.CONNECTED_APP_dev
 	def CONNECTED_APP_CONSUMER_KEY_prod=env.CONNECTED_APP_prod
 	
@@ -27,7 +33,7 @@ node {
     println CONNECTED_APP_CONSUMER_KEY_prod
     def toolbelt = tool 'toolbelt'
     def BRANCH_NAME = env.BRANCH_NAME
-    
+	
    
 	    stage('checkout source') {
         		// when running in multi-branch job, one must issue this command
@@ -42,12 +48,12 @@ node {
  	
        		if (env.BRANCH_NAME == "UAT")  {
 
-		    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+		      withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'HUB_ORG_DH_uat', variable: 'HUB_ORG_DH_uat'), string(credentialsId: 'CONNECTED_APP_uat', variable: 'CONNECTED_APP_uat'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
         		stage('Dev:Authorization and Deployment') {
             	if (isUnix()) {
-                	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_uat} --username ${HUB_ORG_uat} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_uat} --username ${HUB_ORG_DH_uat} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             	}else{
-                	 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_uat} --username ${HUB_ORG_uat} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                	 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_uat} --username ${HUB_ORG_DH_uat} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             	}
             	if (rc != 0) { error 'hub org authorization failed' }
 
@@ -79,12 +85,12 @@ node {
 stage('Run Tests In Package UAT Org') {
   if (isUnix()) {
 	
-	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_uat}"
+	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
 	    println rc
   }
 	else
 	{
-	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_uat}"
+	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
            println rc
 	  
 	    if (rc != 0) {
@@ -97,10 +103,22 @@ stage('Run Tests In Package UAT Org') {
 				
 				// need to pull out assigned username
 				if (isUnix()) {
-					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_uat}"
+					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
 				}else{
-			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_uat}"
-				}
+			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_uat}"
+				  rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_uat} --json"  //rmsg
+                                    
+                                    rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
+                                    def object = readJSON text: rmsg                                   
+                                    if (object.result.done) 
+                                    {
+                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end' 
+                                    }
+                                     else
+                                    {
+                                        sleep(3000)   //sleep
+                                    }   
+                }
 			  
             	printf rmsg
             	println('Hello from a Job DSL script!')
@@ -116,100 +134,112 @@ stage('Run Tests In Package UAT Org') {
 	   mail bcc: '', body: 'UAT stage has Failed with error - '+err+'-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Failed job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
 			}
   
-   try{
+  try{
 
-	     stage('Dev Deployment') {
- 	
-       		if (env.BRANCH_NAME == "Dev")  {
+         stage('Dev Deployment') {
+     
+               if (env.BRANCH_NAME == "Dev")  {
 
-		    withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-        		stage('Dev:Authorization and Deployment') {
-            	if (isUnix()) {
-                	rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_dev} --username ${HUB_ORG_dev} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
-            	}else{
-                	 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_dev} --username ${HUB_ORG_dev} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
-            	}
-            	if (rc != 0) { error 'hub org authorization failed' }
+withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_dev', variable: 'CONNECTED_APP_dev'), string(credentialsId: 'HUB_ORG_DH_dev', variable: 'HUB_ORG_DH_dev'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
+                stage('Dev:Authorization and Deployment') {
+                if (isUnix()) {
+                    rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_dev} --username ${HUB_ORG_DH_dev} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                }else{
+                     rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_dev} --username ${HUB_ORG_DH_dev} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                }
+                if (rc != 0) { error 'hub org authorization failed' }
 
-				println rc
-				
-			stage('Convert Source Code to Metadata format') {
+                println rc
+                
+            stage('Convert Source Code to Metadata format') {
   if (isUnix()) {
-	
-	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:source:convert -d MDAPI_MetaData"
-	    println rc
+    
+      rc = sh returnStatus: true, script: "\"${toolbelt}\" force:source:convert -d MDAPI_MetaData"
+        println rc
   }
-	else
-	{
-	   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:source:convert -d MDAPI_MetaData"
-		println rmsg
-	}
-	  
-	   
-	  
+    else
+    {
+       rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:source:convert -d MDAPI_MetaData"
+        println rmsg
+    }
+      
+       
+      
 }
-	
+    
 }
-				
-		
-			
-					// Run unit tests in package install scratch org.
+                
+        
+            
+                    // Run unit tests in package install scratch org.
 
  
 stage('Run Tests In Package Dev Org') {
   if (isUnix()) {
-	
-	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
-	    println rc
+    
+      rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+        println rc
   }
-	else
-	{
-	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
+    else
+    {
+      rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
            println rc
-	  
-	    if (rc != 0) {
+      
+        if (rc != 0) {
         error 'Salesforce unit test run in dev org failed.'
     }
-	  
+      
 }
-	
+    
 }
-	
+    
 
-				// need to pull out assigned username
-				if (isUnix()) {
-					rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
-				}else{
-			   	rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_dev}"
-				}
-			  
-            	printf rmsg
-            	println('Hello from a Job DSL script!')
-            	println(rmsg)
-		mail bcc: '', body: 'Dev stage is successful-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Successful job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
-			}
-		    }
-		}
-	     }
+                // need to pull out assigned username
+                if (isUnix()) {
+                    rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+                }else{
+                             rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_dev}"
+                    
+                                    rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_dev} --json"  //rmsg
+                                    
+                                    rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
+                                    def object = readJSON text: rmsg                                   
+                                    if (object.result.done) 
+                                    {
+                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end' 
+                                    }
+                                     else
+                                    {
+                                        sleep(3000)   //sleep
+                                    }   
+                }
+              
+                printf rmsg
+                println('Hello from a Job DSL script!')
+                println(rmsg)
+        mail bcc: '', body: 'Dev stage is successful-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Successful job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
+            }
+            }
+        }
+         }
 	catch (err) {
         		echo "Caught: ${err}"
         		currentBuild.result = 'FAILURE'
 	   mail bcc: '', body: 'Dev stage has Failed with error - '+err+'-'+final_url,  cc: 'gaurav007869@gmail.com', from: '', replyTo: '', subject: 'Failed job', to: 'patel.himanshu@yash.com,saurabh.aglave@yash.com,gaurav.sh@yash.com'
 			}
 
-	
-		     try{
+	  try{
 
 		      stage('Prod Deployment') {
  
        				if (env.BRANCH_NAME == "main")  {
 
-    					withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+    					 withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file'),string(credentialsId: 'CONNECTED_APP_prod', variable: 'CONNECTED_APP_prod'),string(credentialsId: 'HUB_ORG_DH_prod', variable: 'HUB_ORG_DH_prod'), string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')]) {
         					stage('Prod:Authorization and Deployment') {
            						 if (isUnix()) {
-               							 rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_prod} --username ${HUB_ORG_prod} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+               							 rc = sh returnStatus: true, script: "${toolbelt} force:auth:jwt:grant --clientid ${CONNECTED_APP_prod} --username ${HUB_ORG_DH_prod} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
            							 }else{
-                 						 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY_prod} --username ${HUB_ORG_prod} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                 						 rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_prod} --username ${HUB_ORG_DH_prod} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             							}
           			  if (rc != 0) { error 'hub org authorization failed' }
 
@@ -241,12 +271,12 @@ stage('Run Tests In Package Dev Org') {
 stage('Run Tests In Package Prod Org') {
   if (isUnix()) {
 	
-	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+	  rc = sh returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
 	    println rc
   }
 	else
 	{
-	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+	  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run -l RunLocalTests -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
            println rc
 	  
 	    if (rc != 0) {
@@ -260,7 +290,7 @@ stage('Run Tests In Package Prod Org') {
 					// need to pull out assigned username
 					if (isUnix()) {
 						 input "Deploy to prod?"
-						rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
+						rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
 						//rmsg="Prod deployment pretend"
 					}else{
 				
@@ -268,8 +298,18 @@ stage('Run Tests In Package Prod Org') {
 						timeout(time: 10, unit: "MINUTES") {
 						mail bcc: '', body: 'Please go to the link to approve or Reject the deployment-'+final_url,  cc: 'saurabh.aglave@yash.com', from: '', replyTo: '', subject: 'Prod deployment approval request', to: 'gs14701@gmail.com'
 						input "Deploy to prod?"
-		     				 rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_prod}"
-				
+		     				 rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d MDAPI_MetaData/. -u ${HUB_ORG_DH_prod}"
+				                  rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy:report  -u ${HUB_ORG_DH_prod} --json"  //rmsg
+				          rmsg = rmsg.substring(rmsg.indexOf('{'))                                  
+                                    def object = readJSON text: rmsg                                   
+                                    if (object.result.done) 
+                                    {
+                                         print 'S!cr!t_start'+rmsg+'S!cr!t_end' 
+                                    }
+                                     else
+                                    {
+                                        sleep(3000)   //sleep
+                                    }   
 			 			 // rmsg="Prod deployment pretend"
 					}
 					} 
